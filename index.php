@@ -42,5 +42,6 @@
     <span><?= $cPassError ?></span><br/>
     <input type="submit" value="Submit">
 </form>
-</body>
-</html>
+<?php
+    require_once("assets/footer.php");
+?>
