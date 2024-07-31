@@ -1,4 +1,5 @@
 <?php
+    $pageTitle = "Home";
     include "assets/header.php";
 ?>
 <?php
@@ -40,8 +41,23 @@
     <span><?= $passError ?></span><br/>
     <input type="password" name="cpassword" placeholder="Confirm Password" value="<?= $cpassword ?>"><br>
     <span><?= $cPassError ?></span><br/>
+
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
     <input type="submit" value="Submit">
 </form>
+
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illum suscipit quibusdam laudantium, quia ut voluptates iste natus. Officia veritatis nostrum minus optio animi quidem a tenetur, aperiam accusantium mollitia.</p>
 <?php
     require_once("assets/footer.php");
 ?>
