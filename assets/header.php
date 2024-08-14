@@ -22,6 +22,7 @@
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="about.php">About Us</a></li>
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="contact.php">Contact Us</a></li>
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="register.php">Register</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="student_registration.php">Student Register</a></li>
             </ul>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
