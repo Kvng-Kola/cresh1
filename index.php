@@ -11,24 +11,27 @@
         $password = $_POST['password'];
         $cpassword = $_POST['cpassword'];
 
-        if(empty($name)) {
-            $nameError = "Name is required";
-        }
-        if(empty($email)) {
-            $emailError = "Email is required";
-        }
+        echo htmlspecialchars($name);
+        echo $name;
 
-        if(empty($password)) {
-            $passError = "Password is required";
-        }
+        // if(empty($name)) {
+        //     $nameError = "Name is required";
+        // }
+        // if(empty($email)) {
+        //     $emailError = "Email is required";
+        // }
 
-        if(empty($cpassword)) {
-            $cPassError = "Confirm Password is required";
-        }
+        // if(empty($password)) {
+        //     $passError = "Password is required";
+        // }
 
-        if ($password !== $cpassword) {
-            $cPassError = "Passwords do not match";
-        }
+        // if(empty($cpassword)) {
+        //     $cPassError = "Confirm Password is required";
+        // }
+
+        // if ($password !== $cpassword) {
+        //     $cPassError = "Passwords do not match";
+        // }
     }
 ?>
 <h1>Register Student</h1>
