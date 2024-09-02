@@ -3,101 +3,53 @@
     require_once("assets/header.php");
     require_once("assets/db_connect.php");
 
-   
+    // Check if parent is logged in
+    if(!isset($_SESSION['parent_id'])) {
+        header("Location: parent_login.php");
+    }
+
     // Initializing Variables
     $passError = $emailError = $phone1Error = $phone2Error = ""; # Error Variables
-    // $firstname = $middlename = $surname = $gender = $dob = $password = $cpassword = $student_address = $class = $department = ""; // Student Variables
-    $g_firstname = $g_middlename = $g_surname = $g_gender = $g_email = $g_phone1 = $g_phone2 = $g_maritalstatus = $guardian_address = ""; // Guardian Variables
-    // htmlspecialchars()
+    $firstname = $middlename = $surname = $gender = $dob = $password = $cpassword = $student_address = $class = $department = ""; // Student Variables
+    
+    $guardian_id = $_SESSION['parent_id'];
     // Form Validation
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // // Capturing student bio-data
-        // $firstname = htmlspecialchars(trim($_POST["firstname"]));
-        // $middlename = htmlspecialchars($_POST["middlename"]);
-        // $surname = htmlspecialchars($_POST["surname"]);
-        // $gender = htmlspecialchars($_POST["gender"]);
-        // $dob = htmlspecialchars($_POST["dob"]);
-        // $password = htmlspecialchars($_POST["password"]);
-        // $cpassword = htmlspecialchars($_POST["cpassword"]);
-        // $student_address = htmlspecialchars($_POST['student_address']);
-        // $class = htmlspecialchars($_POST['class']);
-        // $department = htmlspecialchars($_POST['department']);
+        // Capturing student bio-data
+        $firstname = htmlspecialchars(trim($_POST["firstname"]));
+        $middlename = htmlspecialchars($_POST["middlename"]);
+        $surname = htmlspecialchars($_POST["surname"]);
+        $gender = htmlspecialchars($_POST["gender"]);
+        $dob = htmlspecialchars($_POST["dob"]);
+        $student_address = htmlspecialchars($_POST['student_address']);
+        $class = htmlspecialchars($_POST['class']);
+        $department = htmlspecialchars($_POST['department']);
 
-        // Capturing guardian bio-data
-        $g_firstname = $_POST["g_firstname"];
-        $g_middlename = $_POST["g_middlename"];
-        $g_surname = $_POST["g_surname"];
-        $g_gender = $_POST["g_gender"];
-        $g_email = $_POST["g_email"];
-        $password = htmlspecialchars($_POST["password"]);
-        $cpassword = htmlspecialchars($_POST["cpassword"]);
-        $g_phone1 = $_POST["g_phone1"];
-        $g_phone2 = $_POST["g_phone2"];
-        $g_maritalstatus = $_POST["g_maritalstatus"];
-        $guardian_address = $_POST['guardian_address'];
+        // Hashing the password
+        $pass = password_hash($surname, PASSWORD_DEFAULT);
 
         // Validating email address
-        if (filter_var($g_email, FILTER_VALIDATE_EMAIL)) {
-            $sql = "SELECT * FROM guardians WHERE email = ?";
+        $email = $firstname . $surname . rand(1,100) . "@cresh.edu.ng";
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $sql = "SELECT * FROM students WHERE email = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $g_email);
+            $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
             if($result->num_rows > 0) {
-                $emailError = "$g_email already exists";
+                $emailError = "$email already exists";
             }
         } else {
             $emailError = "Invalid email format";
         }
 
-        
-
-        // Password Validation
-        if($password == $cpassword) {
-            if(preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@%$&?-_])[A-Za-z\d!@%$&?-_]{8,}/", $password)) {
-                $pass = password_hash($password, PASSWORD_DEFAULT);
-            } else {
-                $passError = "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character";
-            }
-        } else {
-            $passError = "Password do not match";
-        }
-
-        // Phone Number Validation
-        if (!preg_match('/^0[789][01]\d{8}$|^\+234[789][01]\d{8}$/', $g_phone1)) {
-            $phone1Error = "Invalid Phone Number";
-            $sql = "SELECT * FROM guardians WHERE phone1 = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $g_phone1);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if($result->num_rows > 0) {
-                $phone1Error = "$g_phone1 already exists";
-            }
-        }
-        
-
-        if (!empty($g_phone2)) {
-            if (!preg_match('/^0[789][01]\d{8}$|^\+234[789][01]\d{8}$/', $g_phone2)) {
-                $phone2Error = "Invalid Phone Number";
-                $sql = "SELECT * FROM guardians WHERE phone2 = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $g_phone2);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if($result->num_rows > 0) {
-                    $phone2Error = "$g_phone2 already exists";
-                }
-            }
-        }
-
         // Population the database
-        if($emailError == "" && $passError == "" && $phone1Error == "" && $phone2Error =="") {
+        if($emailError == "") {
             // Populating the guardian database
-            $sql = "INSERT INTO guardians (firstname, middlename, surname, phone1, phone2, email, password, gender, marital_status, home_address) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            $sql = "INSERT INTO students(firstname, middlename, surname, dob, email, password, gender, home_address, guardian_id, class, department, student_dp) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conn->prepare($sql);
             if ($stmt) {
-                $stmt->bind_param("ssssssssss",$g_firstname, $g_middlename, $g_surname, $g_phone1, $g_phone2, $g_email, $pass, $g_gender, $g_maritalstatus, $guardian_address);
+                $stmt->bind_param("ssssssssssss",$firstname, $middlename, $surname, $email, $pass, $gender,  $student_address, $guardian_id, $class, $department);
                 if($stmt->execute()){
                     echo "<h1>Registered Successfully</h1>";
                 };
@@ -113,34 +65,41 @@
 <main class="m-5 p-5" style="background: gray;">
     <form autocomplete="off" method="post" action="" style="display: flex; gap: 20px; flex-flow: column">
 
-        <h1>Guardian Biodata</h1>
-
+        <h1>Student Registration</h1>
+        
         <div class="row">
-            <div class="col">
-                <input type="text" class="form-control" placeholder="First name" name="g_firstname" value="<?= $g_firstname?>" required/>
-            </div>
-            <div class="col">
-                <input type="text" class="form-control" placeholder="Middlename (Optional)" name="g_middlename" value="<?= $g_middlename?>"/>
-            </div>
-            <div class="col">
-                <input type="text" class="form-control" placeholder="Surname" name="g_surname" value="<?= $g_surname?>" required/>
-            </div>
+            <input type="file" name="student_dp" id="student_dp" class="form-control"/>
+            <img src="" alt="File Upload" name="imagePreview" id="imagePreview" class="form-control"/>
         </div>
 
         <div class="row">
             <div class="col">
-                <input type="tel" class="form-control" placeholder="Phone Number" name="g_phone1" value="<?= $g_phone1?>" required/>
-                <span class="text-danger"><?= $phone1Error ?></span>
+                <input type="text" class="form-control" placeholder="First name" name="firstname" value="<?= $firstname?>" required/>
             </div>
             <div class="col">
-                <input type="tel" class="form-control" placeholder="Alt Phone Number (Optional)" name="g_phone2" value="<?= $g_phone2?>"/>
-                <span class="text-danger"><?= $phone2Error ?></span>
+                <input type="text" class="form-control" placeholder="Middlename (Optional)" name="middlename" value="<?= $middlename?>"/>
             </div>
             <div class="col">
-                <input type="email" class="form-control" placeholder="E-Mail Address" name="g_email" value="<?= $g_email?>" required/>
+                <input type="text" class="form-control" placeholder="Surname" name="surname" value="<?= $surname?>" required/>
             </div>
         </div>
+        
+        <div class="row">
+            <div class="col">
+                Gender:
+                <input type="radio" name="gender" value="Male"/> Male
+                <input type="radio" name="gender" value="Female" checked/> Female
+                <input type="radio" name="gender" value="Others"/> Others
+            </div>
+            <div class="col">
+                <div class="d-flex">
+                    Date Of Birth:
+                    <input type="date" class="form-control" name="dob" value="<?= $dob ?>" required/>
+                </div>
+            </div>
 
+        </div>
+        
         <div class="row">
             <div class="col">
                 <input type="password" class="form-control" placeholder="Password" name="password" value="<?= $password?>" required/>
@@ -154,35 +113,70 @@
 
         <div class="row">
             <div class="col">
-                Gender:
-                <input type="radio" name="g_gender" value="Male"/> Male
-                <input type="radio" name="g_gender" value="Female" checked/> Female
-                <input type="radio" name="g_gender" value="Others"/> Others
-            </div>
-            <div class="col">
-                <div class="d-flex">
-                    Marital Status:
-                    <select name="g_maritalstatus" required class="form-control" value="<?=$g_maritalstatus?>">
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Divorced">Divorced</option>
-                        <option value="Seperated">Seperated</option>
-                        <option value="Widowed">Widowed</option>
-                    </select>
-                </div>
+                <textarea placeholder="Home Address" name="student_address" class="form-control" required><?= $student_address?></textarea>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <textarea placeholder="Home Address" name="guardian_address" class="form-control"><?= $guardian_address?></textarea>
+                Class:
+                <select class="form-select" name="class" value="<?= $class?>" required>
+                    <option value="Cresh">Cresh</option>
+                    <option value="KG1">KG1</option>
+                    <option value="KG2">KG2</option>
+                    <option value="Nur1">Nur1</option>
+                    <option value="Nur2">Nur2</option>
+                    <option value="Pry1">Pry1</option>
+                    <option value="Pry2">Pry2</option>
+                    <option value="Pry3">Pry3</option>
+                    <option value="Pry4">Pry4</option>
+                    <option value="Pry5">Pry5</option>
+                    <option value="Pry6">Pry6</option>
+                    <option value="JSS1">JSS1</option>
+                    <option value="JSS2">JSS2</option>
+                    <option value="JSS3">JSS3</option>
+                    <option value="SSS1">SSS1</option>
+                    <option value="SSS2">SSS2</option>
+                    <option value="SSS3">SSS3</option>
+                </select>
             </div>
-        </div>
-
-        <div class="row ">
             <div class="col">
-                <input type="submit" value="Register Student" class="form-control btn btn-primary"/>
+                Department:
+                <select class="form-select" name="department" value="<?= $department?>" required>
+                    <option value="null">No Selection</option>
+                    <option value="Art">Art</option>
+                    <option value="Science">Science</option>
+                    <option value="Commercial">Commercial</option>
+                    
+                </select>
             </div>
         </div>
     </form>
 </main>
+
+
+<script>
+    const preview = document.querySelector("#imagePreview");
+    const studImage = document.querySelector("#student_dp");
+    
+    studImage.addEventListener("change", function() {
+        let file = this.files[0];
+
+        fileSize = 3 * 1024 * 1024;
+        if (file['type'] == "image/jpeg" || file['type'] == "image/png" || file['type'] == "image/jpg") {
+            if (!(file['size'] > fileSize)) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    preview.src = reader.result;
+                }
+                reader.readAsDataURL(file);
+        } else {
+            alert("file exceed 3MB");
+            this.value = "";
+        }
+        } else {
+            alert(file['name'] + " is not allowed");
+            this.value = "";
+        }
+    });
+</script>
