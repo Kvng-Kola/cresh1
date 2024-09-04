@@ -9,6 +9,21 @@
 
     echo "<h1>welcome, " . $_SESSION['firstname'] . "</h1>";
     // echo "<h1>welcome, $_SESSION['firstname']</h1>";
+    $student_dp = "";
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $student_dp = $_FILES['student_dp'];
+
+        // echo $student_dp['error'];
+        if($student_dp['error'] == 0) {
+            // echo pathinfo($student_dp['name'], PATHINFO_EXTENSION);
+            $filename = uniqid('student_') . "." . pathinfo($student_dp['name'], PATHINFO_EXTENSION);
+            $fileLocation = "student_dp/" . $filename;
+            
+        } else {
+            echo "Error in uploading file";
+        }
+    }
+    
 
 ?>
 
@@ -19,8 +34,11 @@
         border-radius: 5px;
     }
 </style>
-<input type="file" name="student_dp" id="student_dp" />
-<img src="" alt="File Upload" name="imagePreview" id="imagePreview"/>
+<form action="" method="post" enctype="multipart/form-data">
+    <img src="" alt="File Upload" name="imagePreview" id="imagePreview"/> <br/>
+    <input type="file" name="student_dp" id="student_dp" /> <br/>
+    <input type="submit" class="btn btn-primary" value="Sign In"/>
+</form>
 
 <script>
     const preview = document.querySelector("#imagePreview");

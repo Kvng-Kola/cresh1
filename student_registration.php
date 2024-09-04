@@ -9,7 +9,7 @@
     }
 
     // Initializing Variables
-    $passError = $emailError = $phone1Error = $phone2Error = ""; # Error Variables
+    $dpError = $passError = $emailError = $phone1Error = $phone2Error = ""; # Error Variables
     $firstname = $middlename = $surname = $gender = $dob = $password = $cpassword = $student_address = $class = $department = ""; // Student Variables
     
     $guardian_id = $_SESSION['parent_id'];
@@ -24,6 +24,16 @@
         $student_address = htmlspecialchars($_POST['student_address']);
         $class = htmlspecialchars($_POST['class']);
         $department = htmlspecialchars($_POST['department']);
+        $student_dp = $_FILES['student_dp'];
+
+        // echo $student_dp['error'];
+        if($student_dp['error'] == 0) {
+            // echo pathinfo($student_dp['name'], PATHINFO_EXTENSION);
+            $filename = $firstname . '_' . $surname . "_" . uniqid() . "." . pathinfo($student_dp['name'], PATHINFO_EXTENSION);
+            $fileLocation = "student_dp/" . $filename;
+        } else {
+            $dpError = "Error in uploading file";
+        }
 
         // Hashing the password
         $pass = password_hash($surname, PASSWORD_DEFAULT);
@@ -43,19 +53,25 @@
             $emailError = "Invalid email format";
         }
 
+        // Image Validation
+        if (empty($student_dp['']))
+
         // Population the database
-        if($emailError == "") {
+        if($emailError == "" && $dpError == "") {
             // Populating the guardian database
             $sql = "INSERT INTO students(firstname, middlename, surname, dob, email, password, gender, home_address, guardian_id, class, department, student_dp) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conn->prepare($sql);
             if ($stmt) {
-                $stmt->bind_param("ssssssssssss",$firstname, $middlename, $surname, $email, $pass, $gender,  $student_address, $guardian_id, $class, $department);
-                if($stmt->execute()){
+                $stmt->bind_param("ssssssssssss",$firstname, $middlename, $surname, $dob, $email, $pass, $gender,  $student_address, $guardian_id, $class, $department, $fileLocation);
+                if($stmt->execute() && move_uploaded_file($student_dp['tmp_name'], $fileLocation)){
+                    // move_uploaded_file($student_dp['tmp_name'], $fileLocation);
                     echo "<h1>Registered Successfully</h1>";
+                } else {
+                    echo "Error: ". $stmt->error;
                 };
             }
         } else {
-            echo "Errors: $emailError, $passError, $phone1Error, $phone2Error";
+            echo "Errors: $emailError, $dpError";
         }
         
     }
@@ -63,13 +79,13 @@
 ?>
 
 <main class="m-5 p-5" style="background: gray;">
-    <form autocomplete="off" method="post" action="" style="display: flex; gap: 20px; flex-flow: column">
+    <form autocomplete="off" method="post" action="" style="display: flex; gap: 20px; flex-flow: column" enctype="multipart/form-data">
 
         <h1>Student Registration</h1>
         
         <div class="row">
-            <input type="file" name="student_dp" id="student_dp" class="form-control"/>
             <img src="" alt="File Upload" name="imagePreview" id="imagePreview" class="form-control"/>
+            <input type="file" name="student_dp" id="student_dp" class="form-control" required />
         </div>
 
         <div class="row">
@@ -98,17 +114,6 @@
                 </div>
             </div>
 
-        </div>
-        
-        <div class="row">
-            <div class="col">
-                <input type="password" class="form-control" placeholder="Password" name="password" value="<?= $password?>" required/>
-                <span class="text-danger"><?= $passError?></span>
-            </div>
-            <div class="col">
-                <input type="password" class="form-control" placeholder="Confirm Password" name="cpassword" value="<?= $cpassword ?>" required />
-                <span class="text-danger"><?= $passError?></span>
-            </div>
         </div>
 
         <div class="row">
@@ -151,6 +156,8 @@
                 </select>
             </div>
         </div>
+
+        <input type="submit" class="btn btn-primary" value="Sign In"/>
     </form>
 </main>
 
