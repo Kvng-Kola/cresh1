@@ -3,6 +3,9 @@
     require_once("assets/header.php");
     require_once("assets/db_connect.php");
 
+    $name = " JOHN doe ";
+    echo strtolower(str_replace(" ", "",$name));
+
     if(!isset($_SESSION['parent_id'])) {
         header("Location: parent_login.php");
     }
