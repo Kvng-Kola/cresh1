@@ -15,28 +15,22 @@
 
     // Check if any wards exist
     if(mysqli_num_rows($result) > 0) {
-        echo "<table class='table table-striped'>";
-        echo "<thead class='thead-dark'>";
-        echo "<tr>";
-        echo "<th>Student ID</th>";
-        echo "<th>First Name</th>";
-        echo "<th>Last Name</th>";
-        echo "<th>Student Photo</th>";
-        echo "<th>View Profile</th>";
-        echo "<th>Edit Profile</th>";
-        echo "<th>Delete Profile</th>";
-        echo "</tr>";
-        echo "</thead>";
+        echo "<div class='d-flex flex-wrap gap-3'>";
         while($row = mysqli_fetch_assoc($result)) {
-            echo "<tr>";
-            echo "<td>".$row['student_id']."</td>";
-            echo "<td>".$row['firstname']."</td>";
-            echo "<td>".$row['surname']."</td>";
-            echo "<td><img alt='". $row['firstname']."' src='". $row['student_dp']."' style='max-width: 50px; max-height: 50px;'/></td>";
-            echo "<td><a href='ward_profile.php?sid=". $row['student_id'] ."'>View Profile</a></td>";
-            echo "</tr>";
+?>
+            <div class="card" style="width: 18rem; object-fit: contain;">
+                <img class="card-img-top" src="<?= $row['student_dp'] ?>" alt="<?= $row['firstname'] ?>" style="height: 200px; object-fit: cover; object-position: top">
+                <div class="card-body">
+                    <h5 class="card-title"><?= $row['firstname'] . " " . $row['surname'] ?></h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><?= $row['class'] . " - " . $row['department'] ?></h6>
+                    <p class="card-text"><?= $row['email'] ?></p>
+                    <a href="ward_profile.php?sid=<?= $row['student_id'] ?>" class="btn btn-primary">View Profile</a>
+                </div>
+            </div>
+<?php
         }
-        echo "</table>";
+        echo "</div>";
     } else {
         echo "<h3>No wards found for this parent</h3>";
     }
+?>
