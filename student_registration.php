@@ -149,7 +149,7 @@
             <div class="col">
                 Department:
                 <select class="form-select" name="department" value="<?= $department?>" required>
-                    <option value="null">No Selection</option>
+                    <option value="">No Selection</option>
                     <option value="Art">Art</option>
                     <option value="Science">Science</option>
                     <option value="Commercial">Commercial</option>
@@ -158,7 +158,7 @@
             </div>
         </div>
 
-        <input type="submit" class="btn btn-primary" value="Sign In"/>
+        <input type="submit" class="btn btn-primary" value="Register Ward"/>
     </form>
 </main>
 
